@@ -6,6 +6,7 @@ const Manager = () => {
     const [form, setForm] = useState({ site: "", username: "", password: "" });
     const [passwordArray, setPasswordArray] = useState([]);
     const [isToastVisible, setToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
 
     useEffect(() => {
         const passwords = localStorage.getItem("passwords");
@@ -28,13 +29,28 @@ const Manager = () => {
     };
 
     const savePassword = () => {
-        const newPasswordArray = [...passwordArray, { ...form, id: uuidv4() }];
-        localStorage.setItem(
-            "passwords",
-            JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
-        );
-        setPasswordArray(newPasswordArray);
-        setForm({ site: "", username: "", password: "" });
+        if (
+            form.site.length > 3 &&
+            form.password.length > 3 &&
+            form.username.length > 3
+        ) {
+            const newPasswordArray = [
+                ...passwordArray,
+                { ...form, id: uuidv4() },
+            ];
+            localStorage.setItem(
+                "passwords",
+                JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
+            );
+            setPasswordArray(newPasswordArray);
+            setForm({ site: "", username: "", password: "" });
+        } else {
+            setToastMessage(
+                "Password not saved. Ensure all fields are greater than 3 characters."
+            );
+            setToastVisible(true);
+            setTimeout(() => setToastVisible(false), 3000);
+        }
     };
 
     const deletePassword = (id) => {
@@ -64,6 +80,7 @@ const Manager = () => {
         navigator.clipboard
             .writeText(text)
             .then(() => {
+                setToastMessage("Text copied to clipboard!");
                 setToastVisible(true);
                 setTimeout(() => setToastVisible(false), 3000);
             })
@@ -76,7 +93,7 @@ const Manager = () => {
         <main className="w-full flex flex-col items-center">
             {isToastVisible && (
                 <div className="fixed top-24 right-5 bg-sky-500 text-white px-4 py-2 rounded-lg shadow-lg">
-                    <p className="font-semibold">Text copied to clipboard!</p>
+                    <p className="font-semibold">{toastMessage}</p>
                 </div>
             )}
             <div className="w-5/6 bg-sky-200 mt-14 p-5 rounded-lg max-lg:w-[95%]">
