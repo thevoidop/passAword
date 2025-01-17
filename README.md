@@ -4,6 +4,8 @@ passAword is a modern, secure password manager that allows you to store, manage,
 safely in one place. It features a user-friendly interface with a flexible and responsive design, powered by React,
 and styled with Tailwind CSS.
 
+Live Demo: [Click Here](https://passaword.netlify.app)
+
 ## Features:
 
 -   Secure storage for websites, usernames, and passwords
